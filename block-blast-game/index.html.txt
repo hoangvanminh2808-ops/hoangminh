@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Block Blast Mini</title>
+<style>
+    body {
+        font-family: sans-serif;
+        text-align: center;
+        background: #fafafa;
+    }
+    h1 { margin-top: 20px; }
+    #game {
+        background: #eee;
+        border: 2px solid #333;
+        display: block;
+        margin: 20px auto;
+    }
+</style>
+</head>
+<body>
+
+<h1>Block Blast Mini</h1>
+<canvas id="game" width="400" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const size = 40;
+const rows = 10;
+const cols = 10;
+
+let grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+let currentBlock = { x: 4, y: 0 };
+
+// Vẽ lưới
+function drawGrid() {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            ctx.fillStyle = grid[r][c] ? "orange" : "white";
+            ctx.fillRect(c * size, r * size, size - 2, size - 2);
+        }
+    }
+}
+
+// Vẽ khối rơi
+function drawBlock() {
+    ctx.fillStyle = "red";
+    ctx.fillRect(currentBlock.x * size, currentBlock.y * size, size - 2, size - 2);
+}
+
+// Logic block rơi xuống
+function update() {
+    if (currentBlock.y + 1 < rows && grid[currentBlock.y + 1][currentBlock.x] === 0) {
+        currentBlock.y++;
+    } else {
+        grid[currentBlock.y][currentBlock.x] = 1;
+        currentBlock = { x: Math.floor(cols / 2), y: 0 };
+    }
+}
+
+// Vòng lặp game
+function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    update();
+    drawGrid();
+    drawBlock();
+    requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
+
